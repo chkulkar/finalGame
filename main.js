@@ -14,7 +14,7 @@ var extremeMODE;
 var level=0;
 var highScore;
 var newHighScore;
-var stars;
+var treats;
 var cursors;
 var collectSound;
 var enemySound;
@@ -26,7 +26,7 @@ MainMenu.prototype = {
 		//load game assets
 		preload: function() {
 		game.load.path = 'assets/img/'; 
-		game.load.image('star','star.png'); //star asset from CMPM120 class example
+		game.load.image('treat','treat.png'); //star asset from CMPM120 class example
 		game.load.image('ground', 'platform.png');
 		game.load.image('planet', 'planet14.png'); //planet asset by nicisbig from opengameart.org
 		//game.load.atlasJSONHash('atlas', 'spritesheet.png', 'sprites.json'); //player sprite from CMPM120 class example
@@ -36,7 +36,6 @@ MainMenu.prototype = {
 		// game.load.image('diamond', 'assets/img/diamond.png');
 		game.load.atlasJSONHash('atlas2', 'dog.png', 'dog.json');
 		
-
 
 		// load audio assets
 		game.load.path = 'assets/audio/';
@@ -136,12 +135,12 @@ Play.prototype = {
 		// //}
 
 		//add star group
-		stars = game.add.group();
-		stars.enableBody = true;
+		treats = game.add.group();
+		treats.enableBody = true;
 
-		var star =  stars.create(enemy.body.x-80, enemy.body.y+80, 'star');
-		star.body.velocity.x = planetSpeed;
-		star.body.bounce.y = 0.5;
+		var treat =  treats.create(enemy.body.x-80, enemy.body.y+80, 'treat');
+		treat.body.velocity.x = planetSpeed;
+		treat.body.bounce.y = 0.5;
 		//create 12 stars with gravity and bounce
 		// for (var i = 0; i < 12; i++){
 		// 	var star = stars.create(i * 50, 0, 'star');
@@ -167,16 +166,16 @@ Play.prototype = {
 		level = level + 1;
 
 		var planetNew;
-		var starNew;
+		var treatNew;
 		if (level%150==0){
 		 	planetNew = planets.create(enemy.body.x-10, enemy.body.y+80, 'planet');
 		 	planetNew.body.velocity.x = planetSpeed;
 		 	game.physics.arcade.overlap(player, planets, hitPlanet, null, this);
 
-		 	starNew =  stars.create(enemy.body.x-50, enemy.body.y+80, 'star');
-			starNew.body.velocity.x = planetSpeed;
-			starNew.body.bounce.y = 0.5;
-			game.physics.arcade.overlap(player, stars, collectStar, null, this);
+		 	treatNew =  treats.create(enemy.body.x-50, enemy.body.y+80, 'treat');
+			treatNew.body.velocity.x = planetSpeed;
+			treatNew.body.bounce.y = 0.5;
+			game.physics.arcade.overlap(player, treats, collectTreat, null, this);
 		  
 		}
 	
@@ -206,13 +205,13 @@ Play.prototype = {
 			player.body.velocity.y = -400;
 		}
 		//check for star collision with platform
-		game.physics.arcade.collide(stars, platforms);
+		game.physics.arcade.collide(treats, platforms);
 
 	//check for player collision with obstacle
 		game.physics.arcade.overlap(player, planets, hitPlanet, null, this);
 
 		//check for player overlap with star
-		game.physics.arcade.overlap(player, stars, collectStar, null, this);
+		game.physics.arcade.overlap(player, treats, collectTreat, null, this);
 
 		//check for player collision with enemy
 		game.physics.arcade.overlap(player, enemy, hitEnemy, null, this);
@@ -285,11 +284,11 @@ function printMessages(top_msg, mid_msg, btm_msg) {
 	message = game.add.text(50, game.world.centerY+86, btm_msg, style3);
 }
 
-function collectStar (player, star){
+function collectTreat (player, treat){
 	//play sound when star is collected
 	collectSound.play();
  	//delete star from screen
-	star.kill();
+	treat.kill();
  	//increase score by 10 when star is collected
 	this.score = this.score + 5; 
 	scoreText.text = 'score: ' + this.score;
