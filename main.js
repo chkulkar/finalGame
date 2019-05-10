@@ -5,16 +5,16 @@ var game = new Phaser.Game(1000, 400, Phaser.AUTO, 'phaser');
 var scoreText;
 var platforms;
 var player;
-var playerVelocity = 50;
-var planets;
-var tween;
-var planetSpeed = -100;
 var enemy;
+var treats;
+var pickup2;
+var obstacles;
+var playerVelocity = 50;
+var obstacleSpeed = -100;
 var extremeMODE;
 var level=0;
 var highScore;
 var newHighScore;
-var treats;
 var cursors;
 var collectSound;
 var enemySound;
@@ -28,9 +28,7 @@ MainMenu.prototype = {
 		game.load.path = 'assets/img/'; 
 		game.load.image('treat','treat.png'); //star asset from CMPM120 class example
 		game.load.image('ground', 'platform.png');
-		game.load.image('planet', 'planet14.png'); //planet asset by nicisbig from opengameart.org
-		//game.load.atlasJSONHash('atlas', 'spritesheet.png', 'sprites.json'); //player sprite from CMPM120 class example
-		//game.load.image('doggo', 'doggo.png');
+		game.load.image('obstacle1', 'obstacle1.png'); 
 		game.load.atlasJSONHash('atlas1', 'AI.png', 'AI.json'); 
 		game.load.image('sky', 'sky.png');
 		// game.load.image('diamond', 'assets/img/diamond.png');
@@ -121,11 +119,11 @@ Play.prototype = {
 		player.animations.add('right', ['dog_1', 'dog_2'], 5, true);
 
 
-		planets = game.add.group();
-		planets.enableBody = true;
+		obstacles = game.add.group();
+		obstacles.enableBody = true;
 		//for (var k=0; k<1000; k++){
-			var planet =  planets.create(enemy.body.x-10, enemy.body.y+80, 'planet');
-			planet.body.velocity.x = planetSpeed;
+			var obstacle1 =  obstacles.create(enemy.body.x-10, enemy.body.y+80, 'obstacle1');
+			obstacle1.body.velocity.x = obstacleSpeed;
 
 		//}
 		// 	//for (var k=0; k<1000; k++){
@@ -164,16 +162,15 @@ Play.prototype = {
 	update: function() {
 		var hitPlatform = game.physics.arcade.collide(player, platforms);
 		level = level + 1;
-
-		var planetNew;
+		var obstacle1New;
 		var treatNew;
 		if (level%150==0){
-		 	planetNew = planets.create(enemy.body.x-10, enemy.body.y+80, 'planet');
-		 	planetNew.body.velocity.x = planetSpeed;
-		 	game.physics.arcade.overlap(player, planets, hitPlanet, null, this);
+		 	obstacle1New = obstacles.create(enemy.body.x-10, enemy.body.y+80, 'obstacle1');
+		 	obstacle1New.body.velocity.x = obstacleSpeed;
+		 	game.physics.arcade.overlap(player, obstacles, hitObstacle, null, this);
 
 		 	treatNew =  treats.create(enemy.body.x-50, enemy.body.y+80, 'treat');
-			treatNew.body.velocity.x = planetSpeed;
+			treatNew.body.velocity.x = obstacleSpeed;
 			treatNew.body.bounce.y = 0.5;
 			game.physics.arcade.overlap(player, treats, collectTreat, null, this);
 		  
@@ -208,7 +205,7 @@ Play.prototype = {
 		game.physics.arcade.collide(treats, platforms);
 
 	//check for player collision with obstacle
-		game.physics.arcade.overlap(player, planets, hitPlanet, null, this);
+		game.physics.arcade.overlap(player, obstacles, hitObstacle, null, this);
 
 		//check for player overlap with star
 		game.physics.arcade.overlap(player, treats, collectTreat, null, this);
@@ -294,9 +291,9 @@ function collectTreat (player, treat){
 	scoreText.text = 'score: ' + this.score;
 }
 
- function hitPlanet(player, planet) {
+ function hitObstacle(player, obstacle) {
 
- 	planet.kill();
+ 	obstacle.kill();
  	this.score = this.score - 5;
  	scoreText.text = 'score: ' + this.score;
  	//add distance stuff
